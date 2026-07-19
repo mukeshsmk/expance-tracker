@@ -1,0 +1,7 @@
+<div class="budget-bar" [class]="status()">
+  <div class="track">
+    <div class="fill" [style.width.%]="clampedWidth()"></div>
+    <div class="marker-80"></div>
+  </div>
+  <span class="pct ce-mono" *ngIf="showLabel">{{ rawPercent() | number: '1.0-1' }}%</span>
+</div>

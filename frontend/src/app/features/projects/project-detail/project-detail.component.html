@@ -1,0 +1,139 @@
+<div class="ce-page" *ngIf="!loading() && project() as p">
+  <div class="detail-header">
+    <div class="header-info">
+      <a routerLink="/projects" class="back-link"><mat-icon>arrow_back</mat-icon> Projects</a>
+      <div class="title-row">
+        <h1>{{ p.projectName }}</h1>
+        <span class="ce-status-pill" [class.ok]="p.status === 'Completed'" [class.warning]="p.status === 'Ongoing'" [class.neutral]="p.status === 'Planning'" [class.danger]="p.status === 'On Hold'">{{ p.status }}</span>
+      </div>
+      <p>{{ p.clientName }} &middot; {{ p.siteAddress }}</p>
+    </div>
+
+    <div class="header-actions">
+      <button mat-stroked-button (click)="editProject()">
+        <mat-icon>edit</mat-icon> Edit Project
+      </button>
+      <button mat-flat-button color="primary" (click)="openAddExpense()">
+        <mat-icon>add</mat-icon> Add Expense
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="exportMenu" matTooltip="Export report">
+        <mat-icon>download</mat-icon>
+      </button>
+      <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="exportExcel()"><mat-icon>table_chart</mat-icon> Export Excel</button>
+        <button mat-menu-item (click)="exportPdf()"><mat-icon>picture_as_pdf</mat-icon> Export PDF</button>
+      </mat-menu>
+    </div>
+  </div>
+
+  @if ((p.budgetStatus) === 'exceeded') {
+    <div class="alert-banner danger">
+      <mat-icon>error</mat-icon> Budget Limit Exceeded — this project has spent more than its total estimation.
+    </div>
+  } @else if ((p.budgetStatus) === 'warning') {
+    <div class="alert-banner warning">
+      <mat-icon>warning</mat-icon> This project has reached {{ p.budgetUtilizationPercent | number: '1.0-1' }}% of its budget.
+    </div>
+  }
+
+  <div class="summary-grid">
+    <div class="ce-card summary-card ce-animate-in" style="--i: 0">
+      <span class="s-label">Total Estimation</span>
+      <span class="s-value ce-mono">₹{{ p.totalEstimationAmount | number }}</span>
+    </div>
+    <div class="ce-card summary-card ce-animate-in" style="--i: 1">
+      <span class="s-label">Invested Amount</span>
+      <span class="s-value ce-mono">₹{{ p.initialInvestedAmount | number }}</span>
+    </div>
+    <div class="ce-card summary-card ce-animate-in" style="--i: 2">
+      <span class="s-label">Total Expenses</span>
+      <span class="s-value ce-mono">₹{{ p.totalExpenses || 0 | number }}</span>
+    </div>
+    <div class="ce-card summary-card ce-animate-in" style="--i: 3">
+      <span class="s-label">Remaining Budget</span>
+      <span class="s-value ce-mono" [class.negative]="(p.remainingBudget || 0) < 0">₹{{ p.remainingBudget || 0 | number }}</span>
+    </div>
+  </div>
+
+  <div class="ce-card progress-card ce-animate-in" style="--i: 4">
+    <div class="progress-header">
+      <span>Budget Utilization</span>
+      <span class="meta">Engineer: {{ engineerName() }} &middot; {{ p.startDate | date: 'MMM d, y' }} – {{ p.expectedEndDate | date: 'MMM d, y' }}</span>
+    </div>
+    <ce-budget-bar [percent]="p.budgetUtilizationPercent || 0"></ce-budget-bar>
+  </div>
+
+  <div class="ce-card expense-section">
+    <div class="section-header">
+      <h2>Expenses</h2>
+    </div>
+
+    @if (expenses().length === 0) {
+      <ce-empty-state icon="receipt_long" title="No expenses recorded" subtitle="Add the first expense for this project to start tracking spend.">
+        <button mat-flat-button color="primary" (click)="openAddExpense()">Add Expense</button>
+      </ce-empty-state>
+    } @else {
+      <div class="table-wrap ce-scrollbar">
+        <table mat-table [dataSource]="expenses()" class="expense-table">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let e">{{ e.expenseDate | date: 'MMM d, y' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdBy">
+            <th mat-header-cell *matHeaderCellDef>Created By</th>
+            <td mat-cell *matCellDef="let e">{{ e.createdByName || '—' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Reason</th>
+            <td mat-cell *matCellDef="let e" class="desc-cell">{{ e.description || '—' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let e" class="ce-mono amount-cell">₹{{ e.amount | number }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let e">
+              <div class="row-actions">
+                @if (e.billFile) {
+                  <a [href]="billUrl(e)" target="_blank" mat-icon-button matTooltip="View bill">
+                    <mat-icon>visibility</mat-icon>
+                  </a>
+                }
+                <button mat-icon-button (click)="editExpense(e)" matTooltip="Edit">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteExpense(e)" matTooltip="Delete">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <div class="running-total">
+        <span>Page total</span>
+        <strong class="ce-mono">₹{{ runningTotal() | number }}</strong>
+      </div>
+
+      <mat-paginator
+        [length]="total()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="onPage($event)"
+      ></mat-paginator>
+    }
+  </div>
+</div>
+
+<div class="ce-page" *ngIf="loading()">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>

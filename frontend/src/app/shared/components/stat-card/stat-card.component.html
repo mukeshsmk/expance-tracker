@@ -1,0 +1,9 @@
+<div class="stat-card" [class]="'accent-' + accent">
+  <div class="icon-wrap">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+  <div class="content">
+    <span class="label">{{ label }}</span>
+    <span class="value ce-mono">{{ prefix }}{{ formattedValue }}{{ suffix }}</span>
+  </div>
+</div>

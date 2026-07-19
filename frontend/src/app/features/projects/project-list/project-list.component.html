@@ -1,0 +1,90 @@
+<div class="ce-page">
+  <div class="ce-page-header">
+    <div>
+      <h1>Projects</h1>
+      <p>All construction sites under management</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      New Project
+    </button>
+  </div>
+
+  <div class="toolbar ce-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search projects or clients</mat-label>
+      <input matInput [(ngModel)]="search" placeholder="e.g. Riverside Tower" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusFilter">
+        <mat-option value="all">All statuses</mat-option>
+        <mat-option value="Planning">Planning</mat-option>
+        <mat-option value="Ongoing">Ongoing</mat-option>
+        <mat-option value="Completed">Completed</mat-option>
+        <mat-option value="On Hold">On Hold</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  } @else if (filtered().length === 0) {
+    <ce-empty-state
+      icon="apartment"
+      title="No projects found"
+      subtitle="Create your first project to start tracking expenses."
+    >
+      <button mat-flat-button color="primary" (click)="openCreate()">Create Project</button>
+    </ce-empty-state>
+  } @else {
+    <div class="project-grid">
+      @for (p of filtered(); track p._id; let i = $index) {
+        <div class="ce-card project-card ce-animate-in" [style.--i]="i" (click)="openDetail(p)">
+          <div class="card-top">
+            <div>
+              <h3>{{ p.projectName }}</h3>
+              <span class="client">{{ p.clientName }}</span>
+            </div>
+            <span class="ce-status-pill" [class]="statusClass(p.status)">{{ p.status }}</span>
+          </div>
+
+          <div class="figures">
+            <div>
+              <span class="fig-label">Budget</span>
+              <span class="fig-value ce-mono">₹{{ p.totalEstimationAmount | number }}</span>
+            </div>
+            <div>
+              <span class="fig-label">Spent</span>
+              <span class="fig-value ce-mono">₹{{ p.totalExpenses || 0 | number }}</span>
+            </div>
+            <div>
+              <span class="fig-label">Remaining</span>
+              <span class="fig-value ce-mono" [class.negative]="(p.remainingBudget || 0) < 0">₹{{ p.remainingBudget || 0 | number }}</span>
+            </div>
+          </div>
+
+          <ce-budget-bar [percent]="p.budgetUtilizationPercent || 0"></ce-budget-bar>
+
+          <div class="card-footer">
+            <span class="engineer">
+              <mat-icon>engineering</mat-icon>
+              {{ engineerName(p) }}
+            </span>
+
+            <div class="actions">
+              <button mat-icon-button (click)="openEdit(p, $event)" aria-label="Edit project">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="confirmDelete(p, $event)" aria-label="Delete project">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

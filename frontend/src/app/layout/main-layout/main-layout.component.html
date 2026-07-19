@@ -1,0 +1,13 @@
+<div class="shell">
+  <div class="sidebar-wrap" [class.open]="mobileNavOpen()">
+    <ce-sidebar (navigate)="mobileNavOpen.set(false)"></ce-sidebar>
+  </div>
+  <div class="scrim" *ngIf="mobileNavOpen()" (click)="toggleMobileNav()"></div>
+
+  <div class="main-col">
+    <ce-topbar (menuToggle)="toggleMobileNav()"></ce-topbar>
+    <main class="content ce-scrollbar" [@routeAnimations]="getRouteAnimationData()">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

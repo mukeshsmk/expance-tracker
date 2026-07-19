@@ -1,0 +1,54 @@
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--ce-surface);
+  border: 1px solid var(--ce-border);
+  border-radius: var(--ce-radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--ce-shadow-sm);
+  min-width: 0;
+}
+
+.icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--ce-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: #fff;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.accent-navy .icon-wrap { background: var(--ce-navy-700); }
+.accent-amber .icon-wrap { background: var(--ce-amber-500); }
+.accent-success .icon-wrap { background: var(--ce-success); }
+.accent-danger .icon-wrap { background: var(--ce-danger); }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: 12.5px;
+  color: var(--ce-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ce-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

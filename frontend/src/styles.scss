@@ -1,0 +1,192 @@
+// Custom Theming for Angular Material
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Material handles interactive component theming (buttons, inputs, dialogs).
+// Brand identity (sidebar, cards, budget gauges) is driven by the CSS custom
+// properties below instead, so the "construction blueprint" look is consistent
+// even where Material components aren't used.
+$frontend-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$orange-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+:root {
+  @include mat.all-component-themes($frontend-theme);
+
+  // ---- Design tokens: "Site Blueprint" identity ----
+  // Deep blueprint navy (structural drawings) + safety amber (site signage)
+  --ce-navy-900: #0F1B2D;
+  --ce-navy-800: #16273F;
+  --ce-navy-700: #1E3355;
+  --ce-navy-600: #2A4570;
+  --ce-amber-500: #F2994A;
+  --ce-amber-600: #DB7F2B;
+  --ce-blueprint-line: #2E5C8A;
+
+  --ce-bg: #F6F4EF;
+  --ce-surface: #FFFFFF;
+  --ce-surface-alt: #FBFAF7;
+  --ce-border: #E4E0D6;
+
+  --ce-text-primary: #1A2233;
+  --ce-text-secondary: #5C6478;
+  --ce-text-on-navy: #E9EEF5;
+  --ce-text-on-navy-dim: #A9B7CC;
+
+  --ce-success: #2E7D46;
+  --ce-success-bg: #E7F4EB;
+  --ce-warning: #B8860B;
+  --ce-warning-bg: #FBF1D6;
+  --ce-danger: #C0392B;
+  --ce-danger-bg: #FBE8E5;
+
+  --ce-radius-sm: 6px;
+  --ce-radius-md: 10px;
+  --ce-radius-lg: 14px;
+  --ce-shadow-sm: 0 1px 2px rgba(15, 27, 45, 0.06), 0 1px 1px rgba(15, 27, 45, 0.04);
+  --ce-shadow-md: 0 4px 14px rgba(15, 27, 45, 0.08);
+
+  --ce-font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ce-font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, monospace;
+}
+
+// Dark mode token overrides (toggled via [data-theme="dark"] on <html>)
+html[data-theme='dark'] {
+  --ce-bg: #0D1420;
+  --ce-surface: #16202E;
+  --ce-surface-alt: #131B27;
+  --ce-border: #263346;
+
+  --ce-text-primary: #E9EEF5;
+  --ce-text-secondary: #8D9AB3;
+
+  --ce-success-bg: rgba(46, 125, 70, 0.16);
+  --ce-warning-bg: rgba(184, 134, 11, 0.16);
+  --ce-danger-bg: rgba(192, 57, 43, 0.16);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ce-font-ui);
+  background: var(--ce-bg);
+  color: var(--ce-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.ce-mono {
+  font-family: var(--ce-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ce-scrollbar {
+  &::-webkit-scrollbar { width: 8px; height: 8px; }
+  &::-webkit-scrollbar-thumb { background: var(--ce-border); border-radius: 8px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+}
+
+.ce-card {
+  background: var(--ce-surface);
+  border: 1px solid var(--ce-border);
+  border-radius: var(--ce-radius-md);
+  box-shadow: var(--ce-shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ce-shadow-md);
+  }
+}
+
+@keyframes ce-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ce-animate-in {
+  animation: ce-fade-in-up 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: min(calc(var(--i, 0) * 60ms), 600ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ce-animate-in {
+    animation: none;
+  }
+
+  .ce-card {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.ce-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &.ok { background: var(--ce-success-bg); color: var(--ce-success); }
+  &.warning { background: var(--ce-warning-bg); color: var(--ce-warning); }
+  &.danger { background: var(--ce-danger-bg); color: var(--ce-danger); }
+  &.neutral { background: var(--ce-border); color: var(--ce-text-secondary); }
+}
+
+.ce-page {
+  padding: 28px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.ce-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ce-text-secondary);
+    font-size: 14px;
+  }
+}

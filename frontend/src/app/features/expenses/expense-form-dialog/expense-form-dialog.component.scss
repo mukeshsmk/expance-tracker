@@ -1,0 +1,45 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px;
+  min-width: 460px;
+  max-width: 560px;
+
+  @media (max-width: 600px) {
+    min-width: 0;
+    grid-template-columns: 1fr;
+  }
+}
+
+.span-2 {
+  grid-column: span 2;
+  @media (max-width: 600px) { grid-column: span 1; }
+}
+
+.file-upload {
+  margin-bottom: 12px;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed var(--ce-border);
+  border-radius: var(--ce-radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--ce-text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--ce-amber-500);
+    color: var(--ce-text-primary);
+  }
+}
+
+mat-dialog-actions button[type='submit'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+}

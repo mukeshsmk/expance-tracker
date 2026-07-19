@@ -1,0 +1,19 @@
+<div class="ce-page">
+  <div class="ce-page-header">
+    <div>
+      <h1>Settings</h1>
+      <p>Appearance preferences.</p>
+    </div>
+  </div>
+
+  <div class="ce-card settings-card">
+    <h3>Appearance</h3>
+    <div class="setting-row">
+      <div>
+        <strong>Dark Mode</strong>
+        <span>Switch between light and dark themes.</span>
+      </div>
+      <mat-slide-toggle [checked]="isDark()" (change)="toggleTheme()"></mat-slide-toggle>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Project' : 'Create New Project' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content class="form-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Project Name</mat-label>
+      <input matInput formControlName="projectName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Client Name</mat-label>
+      <input matInput formControlName="clientName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="span-2">
+      <mat-label>Construction Site Address</mat-label>
+      <input matInput formControlName="siteAddress" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Assigned Engineer</mat-label>
+      <mat-select formControlName="assignedEngineer">
+        <mat-option value="">Unassigned</mat-option>
+        @for (eng of engineers(); track eng._id) {
+          <mat-option [value]="eng._id">{{ eng.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (s of statuses; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Expected End Date</mat-label>
+      <input matInput [matDatepicker]="endPicker" formControlName="expectedEndDate" />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Total Estimation Amount (₹)</mat-label>
+      <input matInput type="number" formControlName="totalEstimationAmount" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Initial Invested Amount (₹)</mat-label>
+      <input matInput type="number" formControlName="initialInvestedAmount" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="ref.close()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        {{ isEdit ? 'Save Changes' : 'Create Project' }}
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

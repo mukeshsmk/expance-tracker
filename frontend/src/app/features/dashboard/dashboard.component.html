@@ -1,0 +1,43 @@
+<div class="ce-page">
+  <div class="ce-page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Here's how every site is tracking.</p>
+    </div>
+    <a routerLink="/projects" class="primary-link">View all projects →</a>
+  </div>
+
+  @if (summary(); as s) {
+    <div class="stat-grid">
+      <ce-stat-card class="ce-animate-in" style="--i: 0" label="Total Projects" [value]="s.totalProjects" icon="apartment" accent="navy"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 1" label="Estimated Cost" [value]="s.totalEstimatedCost" icon="request_quote" accent="navy" prefix="₹"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 2" label="Invested Amount" [value]="s.totalInvestedAmount" icon="account_balance" accent="amber" prefix="₹"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 3" label="Total Expenses" [value]="s.totalExpenses" icon="payments" accent="amber" prefix="₹"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 4" label="Remaining Budget" [value]="s.remainingBudget" icon="savings" accent="success" prefix="₹"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 5" label="Active Projects" [value]="s.activeProjects" icon="engineering" accent="navy"></ce-stat-card>
+      <ce-stat-card class="ce-animate-in" style="--i: 6" label="Completed Projects" [value]="s.completedProjects" icon="task_alt" accent="success"></ce-stat-card>
+    </div>
+  }
+
+  <div class="chart-grid">
+    <div class="ce-card chart-card wide ce-animate-in" style="--i: 7">
+      <h3>Monthly Expense Trend</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" type="line"></canvas>
+      </div>
+    </div>
+
+    <div class="ce-card chart-card wide ce-animate-in" style="--i: 8">
+      <h3>Budget vs Expenses by Project</h3>
+      <div class="chart-wrap">
+        @if (charts()?.budgetVsExpense?.length) {
+          <canvas baseChart [data]="barChartData" [options]="barChartOptions" type="bar"></canvas>
+        } @else {
+          <ce-empty-state icon="bar_chart" title="No projects yet" subtitle="Create a project to see budget comparisons here.">
+            <a routerLink="/projects">Go to Projects</a>
+          </ce-empty-state>
+        }
+      </div>
+    </div>
+  </div>
+</div>
