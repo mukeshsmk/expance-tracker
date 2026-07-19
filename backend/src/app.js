@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const path = require('path');
 
 const config = require('./config/env');
 const errorHandler = require('./middleware/errorHandler');
@@ -23,9 +22,6 @@ app.use(cors({ origin: config.clientUrl, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(config.nodeEnv === 'production' ? 'combined' : 'dev'));
-
-// Serve uploaded bill images/PDFs
-app.use('/uploads', express.static(path.join(__dirname, '..', config.uploadDir)));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));

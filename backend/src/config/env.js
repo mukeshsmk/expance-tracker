@@ -20,6 +20,5 @@ module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/construction_expense_db',
   maxFileSizeMb: Number(process.env.MAX_FILE_SIZE_MB) || 10,
-  uploadDir: process.env.UPLOAD_DIR || 'uploads',
   clientUrl: process.env.CLIENT_URL || 'http://localhost:4200',
 };

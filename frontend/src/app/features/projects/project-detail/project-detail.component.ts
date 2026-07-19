@@ -25,7 +25,6 @@ import { ExpenseService } from '../../../core/services/expense.service';
 import { ReportService } from '../../../core/services/report.service';
 import { Project } from '../../../core/models/project.model';
 import { Expense } from '../../../core/models/expense.model';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ce-project-detail',
@@ -51,7 +50,6 @@ export class ProjectDetailComponent implements OnInit {
   runningTotal = computed(() => this.expenses().reduce((sum, e) => sum + e.amount, 0));
 
   private projectId = '';
-  apiUrl = environment.apiUrl.replace('/api', '');
 
   constructor(
     private route: ActivatedRoute,
@@ -161,7 +159,7 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   billUrl(expense: Expense): string {
-    return `${this.apiUrl}${expense.billFile?.url}`;
+    return expense.billFile?.url || '';
   }
 
   private triggerDownload(blob: Blob, filename: string): void {

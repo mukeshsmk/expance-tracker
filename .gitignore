@@ -4,10 +4,6 @@ node_modules/
 # Environment / secrets
 .env
 
-# Backend
-backend/uploads/*
-!backend/uploads/.gitkeep
-
 # Frontend build output
 frontend/dist/
 frontend/tmp/

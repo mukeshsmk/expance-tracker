@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Expense = require('../models/Expense');
 const Project = require('../models/Project');
 const Notification = require('../models/Notification');
@@ -5,6 +6,20 @@ const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
+const { billFileName } = require('../middleware/upload');
+
+// Uploads the multer in-memory file buffer to Vercel Blob and returns the billFile shape
+async function uploadBillFile(file) {
+  const blob = await put(billFileName(file.originalname), file.buffer, {
+    access: 'public',
+    contentType: file.mimetype,
+  });
+  return {
+    url: blob.url,
+    originalName: file.originalname,
+    mimeType: file.mimetype,
+  };
+}
 
 // Checks budget thresholds after an expense is added and notifies the admin + engineer
 async function checkBudgetThresholds(project) {
@@ -89,11 +104,7 @@ exports.createExpense = asyncHandler(async (req, res) => {
   const expenseData = { ...req.body };
 
   if (req.file) {
-    expenseData.billFile = {
-      url: `/uploads/${req.file.filename}`,
-      originalName: req.file.originalname,
-      mimeType: req.file.mimetype,
-    };
+    expenseData.billFile = await uploadBillFile(req.file);
   }
 
   const expense = await Expense.create(expenseData);
@@ -120,11 +131,7 @@ exports.updateExpense = asyncHandler(async (req, res) => {
   });
 
   if (req.file) {
-    expense.billFile = {
-      url: `/uploads/${req.file.filename}`,
-      originalName: req.file.originalname,
-      mimeType: req.file.mimetype,
-    };
+    expense.billFile = await uploadBillFile(req.file);
   }
 
   await expense.save();
