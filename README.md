@@ -34,3 +34,19 @@ backend at `http://localhost:5000/api` by default (configurable in
 
 See each app's own README for the full feature list, API reference, and
 architecture notes.
+
+## Deployment
+
+Live on Vercel as two separate projects from this repo, auto-deploying
+on every push to `main`:
+
+- **Backend** — Root Directory `backend`, runs as a Vercel serverless
+  function (`backend/api/index.js`). Bill images go to Vercel Blob.
+  https://expance-tracker-backend-phi.vercel.app
+- **Frontend** — Root Directory `frontend`, Output Directory
+  `dist/frontend/browser`. Proxies `/api/*` to the backend project via
+  `frontend/vercel.json` so the browser sees everything as same-origin.
+  https://expance-tracker-frontend-one.vercel.app
+
+Backend env vars (`MONGO_URI`, `CLIENT_URL`, `BLOB_READ_WRITE_TOKEN`) are
+set per-project in the Vercel dashboard, not committed.
